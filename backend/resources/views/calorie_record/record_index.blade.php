@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +9,16 @@
         .calorie-card {
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
         .calorie-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-
         .positive-diff {
             color: #EF4444;
         }
-
         .negative-diff {
             color: #10B981;
         }
-
         .add-button {
             position: fixed;
             right: 30px;
@@ -42,32 +37,41 @@
             transition: all 0.3s ease;
             z-index: 100;
         }
-
         .add-button:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
-
         .add-button:active {
             transform: scale(0.95);
         }
     </style>
 </head>
-
 <body class="bg-gray-50">
-@if(session('message'))
-    <div x-data="{ show: true }"
-        x-show="show"
-        x-init="setTimeout(() => show = false, 3000)"
-        class="fixed top-4 right-4 bg-green-50 border border-green-400 text-green-800 px-4 py-3 rounded shadow-lg transition-opacity duration-300">
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-            <span>{{ session('message') }}</span>
+    @if(session('message'))
+        <div x-data="{ show: true }"
+            x-show="show"
+            x-init="setTimeout(() => show = false, 3000)"
+            class="fixed top-4 right-4 bg-green-50 border border-green-400 text-green-800 px-4 py-3 rounded shadow-lg transition-opacity duration-300">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>{{ session('message') }}</span>
+            </div>
         </div>
-    </div>
-@endif
+    @endif
+
+    <!-- ヘッダー（ログアウトボタン付き） -->
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-end">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out">
+                    ログアウト
+                </button>
+            </form>
+        </div>
+    </header>
 
     <div class="container mx-auto px-4 py-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">カロリー記録</h2>
@@ -89,13 +93,13 @@
                             <div class="font-semibold text-gray-700">
                                 {{ $record->date }}
                             </div>
-                            <div class="text-orange-500
-                                    font-medium">
+                            <div class="text-orange-500 font-medium">
                                 {{ number_format($record->total_intake) }} kcal
                             </div>
-                            <div class="font-medium">{{ number_format($record->total_burned) }} kcal</div>
-                            <div
-                                class="{{ $record->total_intake - $record->total_burned > 0 ? 'positive-diff' : 'negative-diff' }} font-medium">
+                            <div class="font-medium">
+                                {{ number_format($record->total_burned) }} kcal
+                            </div>
+                            <div class="{{ $record->total_intake - $record->total_burned > 0 ? 'positive-diff' : 'negative-diff' }} font-medium">
                                 {{ number_format($record->total_intake - $record->total_burned) }} kcal
                             </div>
                         </div>
@@ -104,9 +108,9 @@
             </div>
         </div>
     </div>
-     <a href="{{ route('records.create')}}" class="add-button">
+
+    <a href="{{ route('records.create')}}" class="add-button">
         ＋
     </a>
 </body>
-
 </html>
