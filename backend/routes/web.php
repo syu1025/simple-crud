@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CalorieRecordController;
-use App\Models\CalorieRecord;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,24 +15,40 @@ use App\Models\CalorieRecord;
 |
 */
 
-Route::get('/', [CalorieRecordController::class, "index"])
+Route::get('/', function () {
+    return view('welcome');
+});
+
+//Route::get('/dashboard', function () {
+//    return view('dashboard');
+//})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/index', [CalorieRecordController::class, "index"])
     ->name('records.index');
 
-Route::get('/calorie_records/{date}', [CalorieRecordController::class, "show"])
-    ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
-    ->name('records.show');
+    Route::get('/calorie_records/{date}', [CalorieRecordController::class, "show"])
+        ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        ->name('records.show');
 
-Route::get('/calorie_records/create' , [CalorieRecordController::class,'create'])
-    ->name('records.create');
+    Route::get('/calorie_records/create' , [CalorieRecordController::class,'create'])
+        ->name('records.create');
 
-Route::post('/calorie_records', [CalorieRecordController::class, 'store'])
-    ->name('records.store');
+    Route::post('/calorie_records', [CalorieRecordController::class, 'store'])
+        ->name('records.store');
 
-Route::get('/calorie_records/{id}/edit', [CalorieRecordController::class, 'edit'])
-    ->name('records.edit');
+    Route::get('/calorie_records/{id}/edit', [CalorieRecordController::class, 'edit'])
+        ->name('records.edit');
 
-Route::put('/calorie_records/{id}', [CalorieRecordController::class, 'update'])
-    ->name('records.update');
+    Route::put('/calorie_records/{id}', [CalorieRecordController::class, 'update'])
+        ->name('records.update');
 
-Route::delete('/calorie_records/{id}', [CalorieRecordController::class, "destroy"])
-    ->name('records.destroy');
+    Route::delete('/calorie_records/{id}', [CalorieRecordController::class, "destroy"])
+        ->name('records.destroy');
+});
+
+require __DIR__.'/auth.php';

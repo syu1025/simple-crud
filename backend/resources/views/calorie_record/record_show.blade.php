@@ -25,7 +25,7 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    @if(session('message'))
+@if(session('message'))
     <div x-data="{ show: true }"
         x-show="show"
         x-init="setTimeout(() => show = false, 3000)"

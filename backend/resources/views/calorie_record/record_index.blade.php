@@ -55,11 +55,20 @@
 </head>
 
 <body class="bg-gray-50">
-    @if(session('message'))
-        <div class="alert alert-success">
-            {{ session('message') }}
+@if(session('message'))
+    <div x-data="{ show: true }"
+        x-show="show"
+        x-init="setTimeout(() => show = false, 3000)"
+        class="fixed top-4 right-4 bg-green-50 border border-green-400 text-green-800 px-4 py-3 rounded shadow-lg transition-opacity duration-300">
+        <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>{{ session('message') }}</span>
         </div>
-    @endif
+    </div>
+@endif
+
     <div class="container mx-auto px-4 py-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">カロリー記録</h2>
 
