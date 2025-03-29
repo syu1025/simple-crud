@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('calorie_intake');
             $table->integer('calorie_burned');
             $table->string('note')->nullable();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

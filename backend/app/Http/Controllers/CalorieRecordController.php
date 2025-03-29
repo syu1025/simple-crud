@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\CalorieRecord;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CalorieRecordController extends Controller
 {
@@ -14,12 +16,13 @@ class CalorieRecordController extends Controller
      */
     public function index()
     {
-        $sum_up_calories = CalorieRecord::selectRaw('date, SUM(calorie_intake) as total_intake, SUM(calorie_burned) as total_burned')
-        ->groupBy("date")
-        ->orderBy("date", "desc")
-        ->get();
+        $user = auth()->user();
 
-        $dates = CalorieRecord::select('date')->get();
+        $sum_up_calories = $user->calorieRecords()
+            ->selectRaw('date, SUM(calorie_intake) as total_intake, SUM(calorie_burned) as total_burned')
+            ->groupBy("date")
+            ->orderBy("date", "desc")
+            ->get();
 
 
         return view('calorie_record.record_index', compact('sum_up_calories'));
@@ -55,6 +58,7 @@ class CalorieRecordController extends Controller
         $record->calorie_intake = $request->calorie_intake;
         $record->calorie_burned = $request->calorie_burned;
         $record->note = $request->note;
+        $record->user_id = Auth::id();
         $record->save();
 
 
