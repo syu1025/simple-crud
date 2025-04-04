@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\User;
+use App\Http\Controllers\BaseController;
 
 class CalorieRecordController extends Controller
 {
@@ -115,5 +117,10 @@ class CalorieRecordController extends Controller
 
         session()->flash('message', '記録を削除しました');
         return redirect()->route('records.index');
+    }
+
+    public function test()
+    {
+        return view('layouts.sidebar');
     }
 }

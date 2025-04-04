@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -49,6 +52,9 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/calorie_records/{id}', [CalorieRecordController::class, "destroy"])
         ->name('records.destroy');
+
+        Route::get("/side", [CalorieRecordController::class, "test"])
+        ->name("test");
 });
 
 require __DIR__.'/auth.php';
