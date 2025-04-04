@@ -39,8 +39,7 @@
     </div>
 @endif
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ $date }} のカロリー記録</h1>
-
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ date('Y/m/d', strtotime($date)) }} のカロリー記録</h1>
         @if($each_records->isEmpty())
             <div class="bg-white rounded-lg shadow p-6 text-center text-gray-600">
                 <p>この日付にはカロリー記録がありません。</p>

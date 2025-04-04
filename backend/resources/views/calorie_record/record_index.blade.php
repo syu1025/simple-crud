@@ -92,7 +92,7 @@
                         <a href="{{ route('records.show', ['date' => $record->date]) }}" class="block">
                             <div class="grid grid-cols-4 gap-4 p-4 hover:bg-gray-50 calorie-card">
                                 <div class="font-semibold text-gray-700">
-                                    {{ $record->date }}
+                                    {{ date('Y/m/d', strtotime($record->date)) }}
                                 </div>
                                 <div class="text-orange-500 font-medium">
                                     {{ number_format($record->total_intake) }} kcal
