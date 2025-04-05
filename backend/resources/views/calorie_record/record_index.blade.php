@@ -1,4 +1,4 @@
-@extends('layouts.sidebar')  <!-- 親ビューを継承 -->
+@extends('layouts.sidebar')
 
 @section("content")
     <!DOCTYPE html>

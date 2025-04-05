@@ -105,7 +105,7 @@
         transform: rotate(180deg);
     }
 
-    .container {
+    .container-sidebar {
         display: flex;  /* フレックスボックスを使用 */
         height: 100vh; /* ビューポートの高さに合わせる */
     }
@@ -115,47 +115,45 @@
         background-color: #f8f9fa; /* サイドバーの背景色 */
         border-right: 1px solid #dee2e6; /* サイドバーの右境界線 */
     }
-
-    .main-content {
-        flex: 1; /* 残りのスペースを占める */
-        padding: 1rem; /* パディング */
+    .main-content{
+        width: 100%;
     }
 </style>
 <body>
-    <div class="container">
+    <div class="container-sidebar">
         <div class="sidebar">
             <div class="calorie-sidebar">
-        <a href="{{ route('records.index') }}">
-            <h4 class="sidebar-title">カロリー集計</h4>
-        </a>
-        @foreach ($per_years as $year_data)
-        <div class="sidebar-section">
-            <div class="sidebar-header">
-                <div>
-                    <h5>{{ $year_data->year }}年</h5>
-                    <small>摂取: {{ number_format($year_data->year_total_intake) }} / 消費: {{ number_format($year_data->year_total_burned) }}</small>
-                </div>
-                <span class="arrow">▼</span>
-            </div>
-            <div class="sidebar-content">
-                @foreach ($per_months->where('year', $year_data->year) as $month_data)
-                <div class="sidebar-item">
-                    <a href="{{route('records.index') }}?year={{ $month_data->year }}&month={{ $month_data->month}}">
-                        <h5>{{ $month_data->month }}月</h5>
-                        <div class="sidebar-item-details">
-                            <div>摂取: {{ number_format($month_data->month_total_intake) }}</div>
-                            <div>消費: {{ number_format($month_data->month_total_burned) }}</div>
+                <a href="{{ route('records.index') }}">
+                    <h4 class="sidebar-title">カロリー集計</h4>
+                </a>
+                @foreach ($per_years as $year_data)
+                    <div class="sidebar-section">
+                        <div class="sidebar-header">
+                            <div>
+                                <h5>{{ $year_data->year }}年</h5>
+                                <small>摂取: {{ number_format($year_data->year_total_intake) }} / 消費: {{ number_format($year_data->year_total_burned) }}</small>
+                            </div>
+                            <span class="arrow">▼</span>
                         </div>
-                    </a>
-                </div>
+                        <div class="sidebar-content">
+                            @foreach ($per_months->where('year', $year_data->year) as $month_data)
+                                <div class="sidebar-item">
+                                    <a href="{{route('records.index') }}?year={{ $month_data->year }}&month={{ $month_data->month}}">
+                                        <h5>{{ $month_data->month }}月</h5>
+                                        <div class="sidebar-item-details">
+                                            <div>摂取: {{ number_format($month_data->month_total_intake) }}</div>
+                                            <div>消費: {{ number_format($month_data->month_total_burned) }}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 @endforeach
             </div>
         </div>
-        @endforeach
-    </div>
-        </div>
         <div class="main-content">
-            @yield('content')  <!-- メインコンテンツを挿入 -->
+            @yield('content')
         </div>
     </div>
 

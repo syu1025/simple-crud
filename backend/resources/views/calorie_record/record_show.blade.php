@@ -1,3 +1,6 @@
+@extends('layouts.sidebar')
+
+@section("content")
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,6 +9,9 @@
     <title>カロリー記録</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
+        .container {
+                max-width: none;}
+        }
         .calorie-card {
             transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -114,3 +120,4 @@
     </div>
 </body>
 </html>
+@endsection
