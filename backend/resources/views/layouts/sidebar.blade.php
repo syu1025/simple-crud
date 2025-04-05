@@ -125,8 +125,9 @@
     <div class="container">
         <div class="sidebar">
             <div class="calorie-sidebar">
-        <h4 class="sidebar-title">カロリー集計</h4>
-
+        <a href="{{ route('records.index') }}">
+            <h4 class="sidebar-title">カロリー集計</h4>
+        </a>
         @foreach ($per_years as $year_data)
         <div class="sidebar-section">
             <div class="sidebar-header">
@@ -139,11 +140,13 @@
             <div class="sidebar-content">
                 @foreach ($per_months->where('year', $year_data->year) as $month_data)
                 <div class="sidebar-item">
-                    <h5>{{ $month_data->month }}月</h5>
-                    <div class="sidebar-item-details">
-                        <div>摂取: {{ number_format($month_data->month_total_intake) }}</div>
-                        <div>消費: {{ number_format($month_data->month_total_burned) }}</div>
-                    </div>
+                    <a href="{{route('records.index') }}?year={{ $month_data->year }}&month={{ $month_data->month}}">
+                        <h5>{{ $month_data->month }}月</h5>
+                        <div class="sidebar-item-details">
+                            <div>摂取: {{ number_format($month_data->month_total_intake) }}</div>
+                            <div>消費: {{ number_format($month_data->month_total_burned) }}</div>
+                        </div>
+                    </a>
                 </div>
                 @endforeach
             </div>

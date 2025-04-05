@@ -19,12 +19,19 @@ class CalorieRecordController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $year = request('year');
+        $month = request('month');
 
         $sum_up_calories = $user->calorieRecords()
+            ->when($year && $month, function ($query) use ($year, $month) {
+                $query->whereYear('date', $year)
+                    ->whereMonth('date', $month);
+            })
             ->selectRaw('date, SUM(calorie_intake) as total_intake, SUM(calorie_burned) as total_burned')
-            ->groupBy("date")
-            ->orderBy("date", "desc")
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
             ->get();
+
 
 
         return view('calorie_record.record_index', compact('sum_up_calories'));
@@ -119,8 +126,4 @@ class CalorieRecordController extends Controller
         return redirect()->route('records.index');
     }
 
-    public function test()
-    {
-        return view('layouts.sidebar');
-    }
 }

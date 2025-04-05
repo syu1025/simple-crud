@@ -9,6 +9,10 @@
         <title>カロリー記録</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
         <style>
+            @media (min-width: 640px) {
+            .container {
+                max-width: none;}
+            }
             .calorie-card {
                 transition: transform 0.2s, box-shadow 0.2s;
             }
@@ -49,7 +53,7 @@
             }
         </style>
     </head>
-    <class="bg-gray-50">
+    <body class="bg-gray-50">
         @if(session('message'))
             <div x-data="{ show: true }"
                 x-show="show"
@@ -108,7 +112,7 @@
                     @endforeach
                 </div>
             </div>
-        </div>>
+        </div>
         <a href="{{ route('records.create')}}" class="fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center rounded-full bg-purple-600 text-white text-2xl shadow-lg hover:bg-purple-700 transition-colors">
             ＋
         </a>
