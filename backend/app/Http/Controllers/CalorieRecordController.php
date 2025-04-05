@@ -78,10 +78,11 @@ class CalorieRecordController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($date)//ここでモデルバインド？をできる->"モデル" "変数"でwhereなしでその変数の情報を拾って来れる的な
+    public function show($date)
     {
-        $each_records = CalorieRecord::where('date', $date)->get();
-        //dd($calorieRecord);
+        $user = auth()->user();
+        $each_records = $user->calorieRecords()->where('date', $date)->get();
+
         return view('calorie_record.record_show', compact('each_records', 'date'));
     }
 
