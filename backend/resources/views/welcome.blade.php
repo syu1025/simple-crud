@@ -42,15 +42,13 @@
                 </svg>
             </div>
             <!-- タイトル -->
-            <h1 class="text-3xl font-bold text-emerald-800 mb-4 tracking-wide">カロリー記録チャンネル</h1>
+            <h1 class="text-3xl font-bold text-emerald-800 mb-4 tracking-wide">カロリー記録アプリ</h1>
             <!-- 説明文 -->
             <p class="text-base text-gray-600 mb-6 leading-relaxed">
-                毎日の食事を丁寧に記録。<br>
-                健康な習慣を、自然な形で育てていきましょう。
             </p>
             <!-- Call to Action ボタン -->
             <a href="{{ route('register') }}" class="inline-block px-6 py-2 bg-emerald-600 text-white font-medium rounded-full hover:bg-emerald-700 transition">
-                今すぐ登録
+                登録
             </a>
         </div>
     </div>
