@@ -81,8 +81,11 @@ class CalorieRecordController extends Controller
     public function show($date)
     {
         $user = auth()->user();
-        $each_records = $user->calorieRecords()->where('date', $date)->get();
-
+        $each_records = $user->calorieRecords()->where('date', $date)
+        ->select('*',
+                \DB::raw('YEAR(date) as year'),
+                \DB::raw('MONTH(date) as month'))
+        ->get();
         return view('calorie_record.record_show', compact('each_records', 'date'));
     }
 

@@ -61,21 +61,21 @@
                 </div>
 
                 <div class="divide-y divide-gray-200">
-                    @for ($i = 0; $i < count($each_records); $i++)
-                        <a href="{{ route('records.edit', ['id' => $each_records[$i]->id]) }}">
+                    @foreach ($each_records as $record)
+                        <a href="{{ route('records.edit', ['id' => $record->id]) }}">
                             <div class="grid grid-cols-3 gap-4 p-4 hover:bg-gray-50 calorie-card">
                                 <div class="text-orange-500 font-medium">
-                                    {{ number_format($each_records[$i]->calorie_intake) }} kcal
+                                    {{ number_format($record->calorie_intake) }} kcal
                                 </div>
                                 <div class="font-medium">
-                                    {{ number_format($each_records[$i]->calorie_burned) }} kcal
+                                    {{ number_format($record->calorie_burned) }} kcal
                                 </div>
                                 <div class="text-gray-700">
-                                    {{ $each_records[$i]->note }}
+                                    {{ $record->note }}
                                 </div>
                             </div>
                         </a>
-                        <form action="{{ route('records.destroy', ['id' => $each_records[$i]->id]) }}" method="POST" class="ml-2">
+                        <form action="{{ route('records.destroy', ['id' => $record->id]) }}" method="POST" class="ml-2">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('削除しますか？')">
@@ -85,7 +85,7 @@
                                 </svg>
                             </button>
                         </form>
-                    @endfor
+                    @endforeach
                 </div>
             </div>
 
@@ -104,7 +104,7 @@
                         <div>
                             <span class="block text-sm text-gray-500">差分</span>
                             <span class="{{ $each_records->sum('calorie_intake') - $each_records->sum('calorie_burned') > 0 ? 'positive-diff' : 'negative-diff' }} font-medium">
-                                {{ number_format($each_records->sum('calorie_intake') - $each_records->sum('calorie_burned')) }} kcal
+                                {{ number_format($record->sum('calorie_intake') - $record->sum('calorie_burned')) }} kcal
                             </span>
                         </div>
                     </div>
@@ -113,9 +113,9 @@
         @endif
 
         <div class="mt-6 text-center">
-            <a href="{{ route('records.index') }}" class="inline-block px-4 py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition">
-                一覧に戻る
-            </a>
+                <a href="{{ route('records.index') }}?year={{ $each_records[0]->year }}&month={{ $each_records[0]->month }}" class="inline-block px-4 py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition">
+                    一覧に戻る
+                </a>
         </div>
     </div>
 </body>
