@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer("layouts.sidebar", function ($view) {
+        View::composer(["layouts.sidebar","calorie_record.record_index"], function ($view) {
             $user = auth()->user();
             $per_years = $user->calorieRecords()
                 ->selectRaw("YEAR(date) as year, SUM(calorie_intake) as year_total_intake, SUM(calorie_burned) as year_total_burned")

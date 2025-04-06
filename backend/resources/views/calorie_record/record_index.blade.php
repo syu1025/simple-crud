@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>カロリー記録</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
         <style>
             @media (min-width: 640px) {
             .container {
@@ -51,6 +52,12 @@
             .add-button:active {
                 transform: scale(0.95);
             }
+            .chart-container {
+                position: relative;
+                height: 300px;
+                width: 100%;
+                margin-bottom: 20px;
+            }
         </style>
     </head>
     <body class="bg-gray-50">
@@ -81,6 +88,32 @@
         </header>
 
         <div class="container-fluid px-2 py-4">
+            <!-- 月別カロリーグラフ -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden w-full mb-6">
+                <div class="p-4 bg-gradient-to-r from-purple-500 to-indigo-600">
+                    <h2 class="text-white font-bold text-lg">月別カロリーデータ</h2>
+                </div>
+                <div class="p-4">
+                    <div class="flex mb-4">
+                        <select id="yearSelector" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-32 p-2.5">
+                            @foreach($per_years as $yearData)
+                                <option value="{{ $yearData->year }}">{{ $yearData->year }}年</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="chart-container">
+                            <canvas id="monthlyCalorieChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="monthlyBalanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 日別カロリーリスト -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden w-full">
                 <div class="p-4 bg-gradient-to-r from-blue-500 to-indigo-600">
                     <div class="grid grid-cols-4 gap-4 text-white font-medium">
@@ -116,6 +149,171 @@
         <a href="{{ route('records.create')}}" class="fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center rounded-full bg-purple-600 text-white text-2xl shadow-lg hover:bg-purple-700 transition-colors">
             ＋
         </a>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // サイドバーから月ごとのデータを取得
+                const monthlyData = @json($per_months);
+                const yearSelector = document.getElementById('yearSelector');
+                let calorieChart;
+                let balanceChart;
+
+                // グラフを描画する関数
+                function renderCharts(selectedYear) {
+                    // 選択された年のデータをフィルタリング
+                    const filteredData = monthlyData.filter(item => item.year == selectedYear);
+
+                    // 月の名前を設定
+                    const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+
+                    // データを月順に並べ替え
+                    filteredData.sort((a, b) => a.month - b.month);
+
+                    // グラフ用のデータを準備
+                    const labels = filteredData.map(item => monthNames[item.month - 1]);
+                    const intakeValues = filteredData.map(item => item.month_total_intake);
+                    const burnedValues = filteredData.map(item => item.month_total_burned);
+                    const balanceValues = filteredData.map(item => item.month_total_intake - item.month_total_burned);
+
+                    // 既存のチャートがあれば破棄
+                    if (calorieChart) {
+                        calorieChart.destroy();
+                    }
+                    if (balanceChart) {
+                        balanceChart.destroy();
+                    }
+
+                    // カロリー比較チャート（棒グラフ）
+                    const ctxCalorie = document.getElementById('monthlyCalorieChart').getContext('2d');
+                    calorieChart = new Chart(ctxCalorie, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: '摂取カロリー',
+                                    data: intakeValues,
+                                    backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                                    borderColor: 'rgba(255, 159, 64, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: '消費カロリー',
+                                    data: burnedValues,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: selectedYear + '年 月別カロリー比較',
+                                    font: {
+                                        size: 16
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'カロリー (kcal)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // バランスチャート（線グラフ）
+                    const ctxBalance = document.getElementById('monthlyBalanceChart').getContext('2d');
+                    balanceChart = new Chart(ctxBalance, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'カロリー収支',
+                                data: balanceValues,
+                                fill: true,
+                                backgroundColor: function(context) {
+                                    const chart = context.chart;
+                                    const {ctx, chartArea} = chart;
+                                    if (!chartArea) {
+                                        return null;
+                                    }
+                                    const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                                    gradient.addColorStop(0.5, 'rgba(75, 192, 192, 0.1)');
+                                    gradient.addColorStop(1, 'rgba(255, 99, 132, 0.1)');
+                                    return gradient;
+                                },
+                                borderColor: function(context) {
+                                    const value = context.raw;
+                                    return value >= 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)';
+                                },
+                                borderWidth: 2,
+                                pointBackgroundColor: function(context) {
+                                    const value = context.raw;
+                                    return value >= 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)';
+                                },
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: selectedYear + '年 月別カロリー収支',
+                                    font: {
+                                        size: 16
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            let value = context.raw;
+                                            if (value >= 0) {
+                                                return label + ': +' + value + ' kcal（摂取超過）';
+                                            } else {
+                                                return label + ': ' + value + ' kcal（消費超過）';
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: '収支 (kcal)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // 年選択のイベントリスナー
+                yearSelector.addEventListener('change', function() {
+                    renderCharts(this.value);
+                });
+
+                // 初期表示
+                if (yearSelector.options.length > 0) {
+                    renderCharts(yearSelector.value);
+                }
+            });
+        </script>
     </body>
     </html>
 @endsection
