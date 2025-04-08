@@ -105,7 +105,7 @@
                         <div>
                             <span class="block text-sm text-gray-500">差分</span>
                             <span class="{{ $each_records->sum('calorie_intake') - $each_records->sum('calorie_burned') > 0 ? 'positive-diff' : 'negative-diff' }} font-medium">
-                                {{ number_format($record->sum('calorie_intake') - $record->sum('calorie_burned')) }} kcal
+                                {{ number_format($each_records->sum('calorie_intake') - $each_records->sum('calorie_burned')) }} kcal
                             </span>
                         </div>
                     </div>
