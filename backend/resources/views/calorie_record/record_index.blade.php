@@ -78,6 +78,7 @@
         <!-- ヘッダー（ログアウトボタン付き） -->
         <header class="bg-white shadow">
             <div class="max-w-7xl mx-auto px-4 py-4 flex justify-end">
+                <h3 style="margin: auto">目標摂取カロリー: まだ設定されていません</h3>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out">

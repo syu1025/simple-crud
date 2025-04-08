@@ -53,7 +53,7 @@
         @else
             <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
                 <div class="p-4 bg-gradient-to-r from-blue-500 to-indigo-600">
-                    <div class="grid grid-cols-3 gap-4 text-white font-medium">
+                    <div class="grid grid-cols-4 gap-4 text-white font-medium">
                         <div>摂取カロリー</div>
                         <div>消費カロリー</div>
                         <div>メモ</div>
@@ -63,7 +63,7 @@
                 <div class="divide-y divide-gray-200">
                     @foreach ($each_records as $record)
                         <a href="{{ route('records.edit', ['id' => $record->id]) }}">
-                            <div class="grid grid-cols-3 gap-4 p-4 hover:bg-gray-50 calorie-card">
+                            <div class="grid grid-cols-4 gap-4 p-4 hover:bg-gray-50 calorie-card">
                                 <div class="text-orange-500 font-medium">
                                     {{ number_format($record->calorie_intake) }} kcal
                                 </div>
@@ -73,18 +73,19 @@
                                 <div class="text-gray-700">
                                     {{ $record->note }}
                                 </div>
+                                <form action="{{ route('records.destroy', ['id' => $record->id]) }}" method="POST" class="ml-2" style="text-align: right;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('削除しますか？')">
+                                        <!-- ごみ箱アイコン（Heroiconsの例） -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a2 2 0 00-2 2v0a2 2 0 002 2h4a2 2 0 002-2v0a2 2 0 00-2-2m-4 0h4" />
+                                        </svg>
+                                    </button>
+                                </form>
                             </div>
                         </a>
-                        <form action="{{ route('records.destroy', ['id' => $record->id]) }}" method="POST" class="ml-2">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('削除しますか？')">
-                                <!-- ごみ箱アイコン（Heroiconsの例） -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a2 2 0 00-2 2v0a2 2 0 002 2h4a2 2 0 002-2v0a2 2 0 00-2-2m-4 0h4" />
-                                </svg>
-                            </button>
-                        </form>
+
                     @endforeach
                 </div>
             </div>
@@ -113,9 +114,10 @@
         @endif
 
         <div class="mt-6 text-center">
-                <a href="{{ route('records.index') }}?year={{ $each_records[0]->year }}&month={{ $each_records[0]->month }}" class="inline-block px-4 py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition">
-                    一覧に戻る
-                </a>
+            <a href="{{ isset($each_records[0]) ? route('records.index', ['year' => $each_records[0]->year, 'month' => $each_records[0]->month]) : route('records.index') }}" class="inline-block px-4 py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition">
+                戻る
+            </a>
+
         </div>
     </div>
 </body>

@@ -127,7 +127,7 @@ class CalorieRecordController extends Controller
         $record->delete();
 
         session()->flash('message', '記録を削除しました');
-        return redirect()->route('records.index');
+        return redirect()->back();
     }
 
 }
