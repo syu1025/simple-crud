@@ -21,8 +21,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # アプリケーションディレクトリを作成
 WORKDIR /var/www
 
-# バックエンドフォルダの内容をコピー
-COPY ./backend /var/www
+# プロジェクト全体をコピー（ディレクトリ構造に合わせて調整）
+COPY . /var/www
 
 # 依存関係をインストール
 RUN composer install --optimize-autoloader --no-dev
@@ -30,11 +30,13 @@ RUN composer install --optimize-autoloader --no-dev
 # 権限を設定
 RUN chown -R www-data:www-data /var/www
 
-# キャッシュを生成
-RUN php artisan config:cache && \
-    php artisan route:cache
+# ストレージディレクトリに書き込み権限を付与
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# 環境設定
+ENV PORT=8000
 
 # アプリケーションを実行
-CMD sh -c "php artisan serve --host=0.0.0.0 --port=\${PORT}"
+CMD php artisan serve --host=0.0.0.0 --port=${PORT}
 
-EXPOSE $PORT
+EXPOSE ${PORT}
