@@ -35,6 +35,6 @@ RUN php artisan config:cache && \
     php artisan route:cache
 
 # アプリケーションを実行
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=${PORT}"]
 
 EXPOSE $PORT
