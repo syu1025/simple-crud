@@ -38,3 +38,8 @@ RUN php artisan config:cache && \
 CMD sh -c "php artisan serve --host=0.0.0.0 --port=\${PORT}"
 
 EXPOSE $PORT
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /usr/local/bin/composer
