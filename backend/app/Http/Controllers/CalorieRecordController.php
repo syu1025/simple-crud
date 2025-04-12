@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\User;
 use App\Http\Controllers\BaseController;
+use App\Models\CalorieTarget;
 
 class CalorieRecordController extends Controller
 {
@@ -32,9 +33,10 @@ class CalorieRecordController extends Controller
             ->orderBy('date', 'desc')
             ->get();
 
-
-
-        return view('calorie_record.record_index', compact('sum_up_calories'));
+        $target = $user->calorieTarget()
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+        return view('calorie_record.record_index', ["sum_up_calories" => $sum_up_calories, "target" => $target, ]);
     }
 
     /**

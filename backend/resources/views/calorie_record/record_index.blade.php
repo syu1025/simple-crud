@@ -92,8 +92,12 @@
         <!-- ヘッダー（ログアウトボタン付き） -->
         <header class="bg-white shadow">
             <div class="max-w-7xl mx-auto px-4 py-4 flex justify-end">
-                <div onclick="modal.showModal()" style="margin: auto">
-                        <h3>一日の目標消費カロリー: まだ設定されていません</h3>
+                <div onclick="modal.showModal()" style="margin: auto" id="currentTarget">
+                    @if ($target !== null)
+                        <h3>一日の目標消費カロリー: <span id="currentTargetValue">{{ $target->target_burned_calories_day }}</span>kcal</h3>
+                    @else
+                        <h3><span id="currentTargetValue">まだ目標が設定されていません</span></h3>
+                    @endif
                 </div>
                 <dialog id="modal" class="rounded-lg shadow-xl p-6 max-w-md w-full bg-gradient-to-br from-white to-gray-50 border border-gray-100">
                     <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">目標消費カロリーを設定</h3>
