@@ -18,5 +18,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/calorie-target', [CalorieTargetController::class, 'store'])->name('calorie-target.store');
+
 Route::get('/calorie-target', [CalorieTargetController::class, 'index'])->name('calorie-target.index');

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CalorieRecordController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CalorieTargetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,8 +54,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/calorie_records/{id}', [CalorieRecordController::class, "destroy"])
         ->name('records.destroy');
 
-        Route::get("/side", [CalorieRecordController::class, "test"])
+    Route::get("/side", [CalorieRecordController::class, "test"])
         ->name("test");
+
+    Route::post('/calorie-target/store', [CalorieTargetController::class, 'store'])
+        ->name('calorie-target.store')
+        ->middleware('auth');
 });
 
 require __DIR__.'/auth.php';

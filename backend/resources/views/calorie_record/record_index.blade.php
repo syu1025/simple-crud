@@ -73,6 +73,7 @@
                 background-color: rgba(0, 0, 0, 0.5);
             }
         </style>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
 
     <body class="bg-gray-50">
@@ -103,8 +104,8 @@
                         <input
                             id="targetCaloriesBurned"
                             type="number"
-                            name="target_calories"
-                            placeholder="目標消費カロリー"
+                            name="target_burned_calories_day"
+                            placeholder="目標消費カロリー(日)"
                             class="border border-gray-300 rounded-lg p-2 w-full"
                         />
                         </form>
@@ -388,6 +389,7 @@
             });
         </script>
         <script src="{{ asset('js/calorieTarget.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     </body>
 

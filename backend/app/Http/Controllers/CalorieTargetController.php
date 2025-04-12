@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CalorieTarget
+use App\Models\CalorieTarget;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class CalorieTargetController extends Controller
 {
@@ -30,20 +31,20 @@ class CalorieTargetController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $validated = $request->validate([
-            "target_burned_calories_day" => "required|integer|min:0",
+        $data = $request->validate([
+            'target_burned_calories_day' => 'required|integer|min:0',
         ]);
-    }
-    $calorieTarget = CalorieTarget::create([
-        "user_id" => $request->user()->id,
-        "target_burned_calories_day" => $validated["target_burned_calories_day"],
-    ]);
 
-    return response()->json([
-        "message" => "Calorie target created successfully",
-        "calorie_target" => $calorieTarget,
-    ], Response::HTTP_CREATED);
+        $user = Auth::user();
+        $user->calorieTarget()->create(
+            ['target_burned_calories_day' => $data['target_burned_calories_day']]
+        );
+
+        //成功レスポンスを返す
+        return response()->json([
+            'success' => true,
+            "target_burned_calories_day" => $data['target_burned_calories_day'],
+        ]);
     }
 
     /**
