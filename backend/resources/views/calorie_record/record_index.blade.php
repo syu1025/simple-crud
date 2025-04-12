@@ -95,43 +95,44 @@
                 <div onclick="modal.showModal()" style="margin: auto">
                         <h3>一日の目標消費カロリー: まだ設定されていません</h3>
                 </div>
-                <dialog id="modal" class="rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">目標消費カロリーを設定</h3>
+                <dialog id="modal" class="rounded-lg shadow-xl p-6 max-w-md w-full bg-gradient-to-br from-white to-gray-50 border border-gray-100">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">目標消費カロリーを設定</h3>
                     <div class="space-y-4">
-                        <!-- 入力フォーム（変更なし） -->
+                        <!-- 入力フォーム -->
                         <form id="targetCaloriesForm">
-                        @csrf
-                        <input
-                            id="targetCaloriesBurned"
-                            type="number"
-                            name="target_burned_calories_day"
-                            placeholder="目標消費カロリー(日)"
-                            class="border border-gray-300 rounded-lg p-2 w-full"
-                        />
+                            @csrf
+                            <div class="relative">
+                                <input
+                                    id="targetCaloriesBurned"
+                                    type="number"
+                                    name="target_burned_calories_day"
+                                    placeholder="目標消費カロリー(日)"
+                                    class="border border-gray-300 rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition-all duration-200"
+                                />
+                                <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">kcal</span>
+                            </div>
                         </form>
 
                         <!-- ボタンを横並びに -->
-                        <div class="flex space-x-2">
-                        <!-- 設定ボタン（form属性でフォームに紐付け） -->
-                        <button
-                            type="submit"
-                            form="targetCaloriesForm"
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out"
-                            style="justify-content: start;"
-                            >
-                            設定
-                        </button>
-
-                        <!-- 閉じるボタン -->
-                        <form method="dialog">
+                        <div class="flex space-x-3 pt-2">
+                            <!-- 設定ボタン -->
                             <button
-                            type="submit"
-                            class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out"
-                            style="justify-content: end"
+                                type="submit"
+                                form="targetCaloriesForm"
+                                class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition duration-200 ease-in-out shadow-sm hover:shadow transform hover:-translate-y-0.5"
                             >
-                            閉じる
+                                設定
                             </button>
-                        </form>
+
+                            <!-- 閉じるボタン -->
+                            <form method="dialog" class="flex-1">
+                                <button
+                                    type="submit"
+                                    class="w-full bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 font-medium py-2.5 px-4 rounded-lg transition duration-200 ease-in-out border border-gray-300 shadow-sm hover:shadow transform hover:-translate-y-0.5"
+                                >
+                                    閉じる
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </dialog>
