@@ -19,6 +19,11 @@ class User extends Authenticatable
         return $this->hasMany(CalorieRecord::class);
     }
 
+    public function calorieTarget()
+    {
+        return $this->hasMany(CalorieTarget::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

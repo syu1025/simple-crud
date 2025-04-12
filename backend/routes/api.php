@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\CalorieTargetController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/calorie-target', [CalorieTargetController::class, 'store'])->name('calorie-target.store');
+Route::get('/calorie-target', [CalorieTargetController::class, 'index'])->name('calorie-target.index');

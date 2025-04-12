@@ -1,8 +1,9 @@
 @extends('layouts.sidebar')
 
-@section("content")
+@section('content')
     <!DOCTYPE html>
     <html lang="ja">
+
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,22 +12,28 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
         <style>
             @media (min-width: 640px) {
-            .container {
-                max-width: none;}
+                .container {
+                    max-width: none;
+                }
             }
+
             .calorie-card {
                 transition: transform 0.2s, box-shadow 0.2s;
             }
+
             .calorie-card:hover {
                 transform: translateY(-3px);
                 box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             }
+
             .positive-diff {
                 color: #EF4444;
             }
+
             .negative-diff {
                 color: #10B981;
             }
+
             .add-button {
                 position: fixed;
                 right: 30px;
@@ -45,26 +52,32 @@
                 transition: all 0.3s ease;
                 z-index: 100;
             }
+
             .add-button:hover {
                 transform: scale(1.1);
                 box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             }
+
             .add-button:active {
                 transform: scale(0.95);
             }
+
             .chart-container {
                 position: relative;
                 height: 300px;
                 width: 100%;
                 margin-bottom: 20px;
             }
+
+            #modal::backdrop {
+                background-color: rgba(0, 0, 0, 0.5);
+            }
         </style>
     </head>
+
     <body class="bg-gray-50">
-        @if(session('message'))
-            <div x-data="{ show: true }"
-                x-show="show"
-                x-init="setTimeout(() => show = false, 3000)"
+        @if (session('message'))
+            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
                 class="fixed top-4 right-4 bg-green-50 border border-green-400 text-green-800 px-4 py-3 rounded shadow-lg transition-opacity duration-300">
                 <div class="flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,10 +91,54 @@
         <!-- ヘッダー（ログアウトボタン付き） -->
         <header class="bg-white shadow">
             <div class="max-w-7xl mx-auto px-4 py-4 flex justify-end">
-                <h3 style="margin: auto">目標摂取カロリー: まだ設定されていません</h3>
+                <div onclick="modal.showModal()" style="margin: auto">
+                        <h3>一日の目標消費カロリー: まだ設定されていません</h3>
+                </div>
+                <dialog id="modal" class="rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">目標消費カロリーを設定</h3>
+                    <div class="space-y-4">
+                        <!-- 入力フォーム（変更なし） -->
+                        <form id="targetCaloriesForm">
+                        @csrf
+                        <input
+                            id="targetCaloriesBurned"
+                            type="number"
+                            name="target_calories"
+                            placeholder="目標消費カロリー"
+                            class="border border-gray-300 rounded-lg p-2 w-full"
+                        />
+                        </form>
+
+                        <!-- ボタンを横並びに -->
+                        <div class="flex space-x-2">
+                        <!-- 設定ボタン（form属性でフォームに紐付け） -->
+                        <button
+                            type="submit"
+                            form="targetCaloriesForm"
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out"
+                            style="justify-content: start;"
+                            >
+                            設定
+                        </button>
+
+                        <!-- 閉じるボタン -->
+                        <form method="dialog">
+                            <button
+                            type="submit"
+                            class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out"
+                            style="justify-content: end"
+                            >
+                            閉じる
+                            </button>
+                        </form>
+                        </div>
+                    </div>
+                </dialog>
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out">
+                    <button type="submit"
+                        class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition duration-150 ease-in-out">
                         ログアウト
                     </button>
                 </form>
@@ -96,8 +153,9 @@
                 </div>
                 <div class="p-4">
                     <div class="flex mb-4">
-                        <select id="yearSelector" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-32 p-2.5">
-                            @foreach($per_years as $yearData)
+                        <select id="yearSelector"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-32 p-2.5">
+                            @foreach ($per_years as $yearData)
                                 <option value="{{ $yearData->year }}">{{ $yearData->year }}年</option>
                             @endforeach
                         </select>
@@ -138,7 +196,8 @@
                                 <div class="font-medium">
                                     {{ number_format($record->total_burned) }} kcal
                                 </div>
-                                <div class="{{ $record->total_intake - $record->total_burned > 0 ? 'text-red-500' : 'text-green-500' }} font-medium">
+                                <div
+                                    class="{{ $record->total_intake - $record->total_burned > 0 ? 'text-red-500' : 'text-green-500' }} font-medium">
                                     {{ number_format($record->total_intake - $record->total_burned) }} kcal
                                 </div>
                             </div>
@@ -147,11 +206,19 @@
                 </div>
             </div>
         </div>
-        <a href="{{ route('records.create')}}" class="fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center rounded-full bg-purple-600 text-white text-2xl shadow-lg hover:bg-purple-700 transition-colors">
+        <a href="{{ route('records.create') }}"
+            class="fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center rounded-full bg-purple-600 text-white text-2xl shadow-lg hover:bg-purple-700 transition-colors">
             ＋
         </a>
 
         <script>
+            const modal = document.getElementById("modal");
+            modal.addEventListener("click", e => {
+                if (e.target === modal) {
+                    modal.close();
+                }
+            });
+
             document.addEventListener('DOMContentLoaded', function() {
                 // サイドバーから月ごとのデータを取得
                 const monthlyData = @json($per_months);
@@ -190,8 +257,7 @@
                         type: 'bar',
                         data: {
                             labels: labels,
-                            datasets: [
-                                {
+                            datasets: [{
                                     label: '摂取カロリー',
                                     data: intakeValues,
                                     backgroundColor: 'rgba(255, 159, 64, 0.7)',
@@ -246,23 +312,29 @@
                                 fill: true,
                                 backgroundColor: function(context) {
                                     const chart = context.chart;
-                                    const {ctx, chartArea} = chart;
+                                    const {
+                                        ctx,
+                                        chartArea
+                                    } = chart;
                                     if (!chartArea) {
                                         return null;
                                     }
-                                    const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                                    const gradient = ctx.createLinearGradient(0, chartArea.bottom,
+                                        0, chartArea.top);
                                     gradient.addColorStop(0.5, 'rgba(75, 192, 192, 0.1)');
                                     gradient.addColorStop(1, 'rgba(255, 99, 132, 0.1)');
                                     return gradient;
                                 },
                                 borderColor: function(context) {
                                     const value = context.raw;
-                                    return value >= 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)';
+                                    return value >= 0 ? 'rgba(255, 99, 132, 1)' :
+                                        'rgba(75, 192, 192, 1)';
                                 },
                                 borderWidth: 2,
                                 pointBackgroundColor: function(context) {
                                     const value = context.raw;
-                                    return value >= 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)';
+                                    return value >= 0 ? 'rgba(255, 99, 132, 1)' :
+                                        'rgba(75, 192, 192, 1)';
                                 },
                                 tension: 0.1
                             }]
@@ -315,6 +387,9 @@
                 }
             });
         </script>
+        <script src="{{ asset('js/calorieTarget.js') }}"></script>
+
     </body>
+
     </html>
 @endsection
