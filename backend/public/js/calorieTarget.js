@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //console.log("設定された目標カロリー:", targetCaloriesNumber);
 
         try{
-            //axiosでpost, 引数で送信先とデータを指定
+            //axiosでpost, 引数で送信先とデータ(キーと変数)を指定
             const response = await axios.post("/calorie-target/store", {
                 target_burned_calories_day: targetCaloriesNumber
             });
