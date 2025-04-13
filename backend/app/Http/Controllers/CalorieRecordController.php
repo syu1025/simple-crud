@@ -30,13 +30,13 @@ class CalorieRecordController extends Controller
             })
             ->selectRaw('date, SUM(calorie_intake) as total_intake, SUM(calorie_burned) as total_burned')
             ->groupBy('date')
-            ->orderBy('date', 'desc')
+            ->orderBy('date', 'asc')
             ->get();
 
         $target = $user->calorieTarget()
                         ->orderBy('created_at', 'desc')
                         ->first();
-        return view('calorie_record.record_index', ["sum_up_calories" => $sum_up_calories, "target" => $target, ]);
+        return view('calorie_record.record_index', ["sum_up_calories" => $sum_up_calories, "target" => $target, "user" => $user]);
     }
 
     /**

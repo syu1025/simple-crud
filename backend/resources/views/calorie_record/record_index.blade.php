@@ -91,15 +91,23 @@
 
         <!-- ヘッダー（ログアウトボタン付き） -->
         <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4 py-4 flex justify-end">
-                <div onclick="modal.showModal()" style="margin: auto" id="currentTarget">
+            <div class="max-w-7xl mx-auto px-4 py-4 flex items-center">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800" onclick="document.getElementById('userModal').showModal()">
+                        {{ $user->name }}さんのユーザー情報
+                    </h3>
+                </div>
+                <dialog id="userModal" class="rounded-lg shadow-xl p-6 max-w-md w-full bg-gradient-to-br from-white to-gray-50 border border-gray-100">
+                    <p>こんにちは、{{ $user->name }}さん！</p>
+                </dialog>
+                <div onclick="document.getElementById('targetModal').showModal()" style="margin: auto" id="currentTarget" class="text-lg font-semibold text-gray-800">
                     @if ($target !== null)
                         <h3>一日の目標消費カロリー: <span id="currentTargetValue">{{ $target->target_burned_calories_day }}</span>kcal</h3>
                     @else
                         <h3><span id="currentTargetValue">まだ目標が設定されていません</span></h3>
                     @endif
                 </div>
-                <dialog id="modal" class="rounded-lg shadow-xl p-6 max-w-md w-full bg-gradient-to-br from-white to-gray-50 border border-gray-100">
+                <dialog id="targetModal" class="rounded-lg shadow-xl p-6 max-w-md w-full bg-gradient-to-br from-white to-gray-50 border border-gray-100">
                     <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">目標消費カロリーを設定</h3>
                     <div class="space-y-4">
                         <!-- 入力フォーム -->
@@ -218,10 +226,17 @@
         </a>
 
         <script>
-            const modal = document.getElementById("modal");
-            modal.addEventListener("click", e => {
-                if (e.target === modal) {
-                    modal.close();
+            const targetModal = document.getElementById("targetModal");
+            targetModal.addEventListener("click", e => {
+                if (e.target === targetModal) {
+                    targetModal.close();
+                }
+            });
+
+            const userModal = document.getElementById("userModal");
+            userModal.addEventListener("click", e => {
+                if (e.target === userModal) {
+                    userModal.close();
                 }
             });
 
