@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>プロフィール更新</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Axios CDNを追加 -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body class="bg-gray-100">
@@ -46,9 +47,9 @@
                         </div>
                     </div>
 
-                    <form id="profile-form" class="space-y-6">
+                    <form id="profile-form" method="POST" action="route('user_profile.update')" class="space-y-6">
                         @csrf
-
+                        @method('PUT')
                         <!-- 性別 user_infoがある、かつgenderが男性ならselected, そうでないなら何もしない -->
                         <div class="grid md:grid-cols-3 md:gap-6">
                             <div class="md:col-span-1">
@@ -260,22 +261,25 @@
 
                 // FormDataオブジェクトの作成
                 const formData = new FormData(form);
-
+                formData.append(" _method", "PUT"); // PUTメソッドを指定
                 // CSRFトークンの取得
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                // Fetch APIでデータを送信
-                fetch('{{ route("profile.update") }}', {
-                    method: 'POST',
+                // axiosのデフォルトヘッダーにCSRFトークンを設定
+                axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+
+                // axiosでデータを送信
+                axios.post('/user_profile/update', formData, {
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'multipart/form-data',
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: formData
+                    }
                 })
-                .then(response => response.json())
-                .then(data => {
+                .then(response => {
+                    // レスポンスデータを取得
+                    const data = response.data;
+
                     // 送信中の表示を解除
                     saveButton.disabled = false;
                     loadingSpinner.classList.add('hidden');

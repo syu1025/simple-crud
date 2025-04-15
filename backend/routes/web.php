@@ -61,10 +61,10 @@ Route::middleware('auth')->group(function () {
         ->name('calorie-target.store')
         ->middleware('auth');
 
-    Route::get("/profile/edit", [UserInfoController::class, "edit"])
+    Route::get("/user_profile/edit", [UserInfoController::class, "edit"])
         ->name("user_profile.edit");
 
-    Route::post('/profile/update', [UserInfoController::class, 'update'])
+    Route::put('/user_profile/update', [UserInfoController::class, 'update'])
         ->name('user_profile.update');
 });
 
