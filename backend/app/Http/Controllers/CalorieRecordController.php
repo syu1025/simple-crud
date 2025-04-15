@@ -36,7 +36,13 @@ class CalorieRecordController extends Controller
         $target = $user->calorieTarget()
                         ->orderBy('created_at', 'desc')
                         ->first();
-        return view('calorie_record.record_index', ["sum_up_calories" => $sum_up_calories, "target" => $target, "user" => $user]);
+
+        $user_info = $user->userInfo()
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+
+        //dd($user_info);
+        return view('calorie_record.record_index', ["sum_up_calories" => $sum_up_calories, "target" => $target, "user" => $user, "user_info" => $user_info]);
     }
 
     /**

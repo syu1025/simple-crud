@@ -98,7 +98,90 @@
                     </h3>
                 </div>
                 <dialog id="userModal" class="rounded-lg shadow-xl p-6 max-w-md w-full bg-gradient-to-br from-white to-gray-50 border border-gray-100">
-                    <p>こんにちは、{{ $user->name }}さん！</p>
+                    <div class="space-y-4">
+                        <!-- ヘッダー部分 -->
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <h3 class="text-xl font-bold text-gray-800">{{ $user->name }}さんのプロフィール</h3>
+                            <button onclick="document.getElementById('userModal').close()" class="text-gray-500 hover:text-gray-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- ユーザー情報 -->
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0012 0c0-.552-.08-1.087-.234-1.584A5.01 5.01 0 0010 11z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-gray-600">性別</span>
+                                </div>
+                                <div class="font-medium text-gray-800">{{ $user_info?->gender ?? '未設定' }}</div>
+
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M6 3a1 1 0 011-1h6a1 1 0 011 1v2a1 1 0 01-1 1H7a1 1 0 01-1-1V3zm1 2h6V4H7v1zm6 4a1 1 0 01-1 1H8a1 1 0 01-1-1V8a1 1 0 011-1h4a1 1 0 011 1v1zM8 8h4v1H8V8zm1 4a1 1 0 100 2h2a1 1 0 100-2H9z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-gray-600">年齢</span>
+                                </div>
+                                <div class="font-medium text-gray-800">{{ $user_info->age ?? '未設定' }}歳</div>
+
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 1.18.898 2.043 2.17 2.507a3.5 3.5 0 001.537.33c.425 0 .839-.055 1.228-.157.653-.173 1.058-.44 1.058-.992 0-.512-.317-.878-.952-.878a1 1 0 100 2c.4 0 .756-.19.981-.51.196-.278.335-.648.335-1.112 0-.893-.598-1.668-1.32-2.147A4.535 4.535 0 0011 5.092V5zm-4 2.405a.75.75 0 01.75-.75h3.5a.75.75 0 010 1.5h-3.5a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-gray-600">身長</span>
+                                </div>
+                                <div class="font-medium text-gray-800">{{ $user_info->height ?? '未設定' }}cm</div>
+
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-gray-600">体重</span>
+                                </div>
+                                <div class="font-medium text-gray-800">{{ $user_info->weight ?? '未設定' }}kg</div>
+                            </div>
+                        </div>
+
+                        <!-- 基礎代謝情報 -->
+                        @if(isset($user_info) && $user_info->height && $user_info->weight && $user_info->age && $user_info->gender)
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <div class="font-medium text-green-800 mb-1">基礎代謝（概算）</div>
+                            <div class="text-xl font-bold text-green-700">
+                                <!-- BMR計算結果を表示（例） -->
+                                @php
+                                    $bmr = 0;
+                                    if ($user_info->gender == '男性') {
+                                        $bmr = 13.397 * $user->weight + 4.799 * $user->height - 5.677 * $user->age + 88.362;
+                                    } else {
+                                        $bmr = 9.247 * $user->weight + 3.098 * $user->height - 4.330 * $user->age + 447.593;
+                                    }
+                                    $bmr = round($bmr);
+                                @endphp
+                                {{ $bmr }} kcal/日
+                            </div>
+                            <div class="text-sm text-green-600 mt-1">※ハリス・ベネディクト方程式による概算値</div>
+                        </div>
+                        @else
+                        <div class="bg-yellow-50 rounded-lg p-4">
+                            <div class="font-medium text-yellow-800">基礎代謝を計算するには</div>
+                            <div class="text-sm text-yellow-700 mt-1">身長・体重・年齢・性別の情報が必要です。プロフィールを更新してください。</div>
+                        </div>
+                        @endif
+
+                        <!-- 編集ボタン -->
+                        <div class="pt-3 flex justify-end">
+                            <a  href="{{ route('user_profile.edit') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                                プロフィール編集
+                            </a>
+                        </div>
+                    </div>
                 </dialog>
                 <div onclick="document.getElementById('targetModal').showModal()" style="margin: auto" id="currentTarget" class="text-lg font-semibold text-gray-800">
                     @if ($target !== null)

@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CalorieRecordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalorieTargetController;
-
+use App\Http\Controllers\UserInfoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,6 +60,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/calorie-target/store', [CalorieTargetController::class, 'store'])
         ->name('calorie-target.store')
         ->middleware('auth');
+
+    Route::get("/profile/edit", [UserInfoController::class, "edit"])
+        ->name("user_profile.edit");
+
+    Route::post('/profile/update', [UserInfoController::class, 'update'])
+        ->name('user_profile.update');
 });
 
 require __DIR__.'/auth.php';
