@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserInfo;
+use Illuminate\Support\Facades\Log;
+
 
 class UserInfoController extends Controller
 {
@@ -16,11 +18,13 @@ class UserInfoController extends Controller
     public function update(Request $request)
 {
     $validated = $request->validate([
-        'weight' => 'nullable|integer|min:1|max:300',
-        'height' => 'nullable|integer|min:50|max:250',
-        'age' => 'nullable|integer|min:1|max:120',
+        'weight' => 'nullable|integer|min:30|max:100',
+        'height' => 'nullable|integer|min:100|max:200',
+        'age' => 'nullable|integer|min:15|max:100',
         'gender' => 'nullable|string|in:男性,女性,その他',
+        'bmr_round' => 'nullable|integer|min:1|max:10000',
     ]);
+
 
     $user = Auth::user();
     $userInfo = $user->userInfo;
@@ -32,10 +36,11 @@ class UserInfoController extends Controller
     }
 
     // データ更新
-    $userInfo->weight = $request->weight;
-    $userInfo->height = $request->height;
-    $userInfo->age = $request->age;
-    $userInfo->gender = $request->gender;
+    $userInfo->weight = $validated["weight"] ?? null;
+    $userInfo->height = $validated["height"] ?? null;
+    $userInfo->age = $validated["age"] ?? null;
+    $userInfo->gender = $validated["gender"] ?? null;
+    $userInfo->bmr_round = $validated["bmr_round"] ?? null;
     $userInfo->save();
 
     // AJAXリクエストの場合はJSONレスポンスを返す

@@ -22,5 +22,7 @@ class UserInfo extends Model
         "height",
         "age",
         "gender",
+        "bmr_round",
+        "user_id",
     ];
 }

@@ -151,17 +151,8 @@
                         <div class="bg-green-50 rounded-lg p-4">
                             <div class="font-medium text-green-800 mb-1">基礎代謝（概算）</div>
                             <div class="text-xl font-bold text-green-700">
-                                <!-- BMR計算結果を表示（例） -->
-                                @php
-                                    $bmr = 0;
-                                    if ($user_info->gender == '男性') {
-                                        $bmr = 13.397 * $user->weight + 4.799 * $user->height - 5.677 * $user->age + 88.362;
-                                    } else {
-                                        $bmr = 9.247 * $user->weight + 3.098 * $user->height - 4.330 * $user->age + 447.593;
-                                    }
-                                    $bmr = round($bmr);
-                                @endphp
-                                {{ $bmr }} kcal/日
+                                <!-- BMR計算結果を表示 -->
+                                {{ $user_info->bmr_round }} kcal/日
                             </div>
                             <div class="text-sm text-green-600 mt-1">※ハリス・ベネディクト方程式による概算値</div>
                         </div>

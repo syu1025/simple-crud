@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('height')->nullable();
             $table->integer('age')->nullable();
             $table->string('gender')->nullable();
+            $table->integer("bmr_round")->nullable();
         });
     }
 

@@ -47,7 +47,7 @@
                         </div>
                     </div>
 
-                    <form id="profile-form" method="POST" action="route('user_profile.update')" class="space-y-6">
+                    <form id="profile-form" method="POST" action="{{ route('user_profile.update') }}" class="space-y-6">
                         @csrf
                         @method('PUT')
                         <!-- 性別 user_infoがある、かつgenderが男性ならselected, そうでないなら何もしない -->
@@ -165,6 +165,8 @@
             const heightError = document.getElementById('height-error');
             const weightError = document.getElementById('weight-error');
 
+            let currentBmrValue = 0;
+
             // リアルタイムバリデーションと基礎代謝計算
             function validateAndCalculate() {
                 // バリデーションフラグ
@@ -219,10 +221,12 @@
                         bmr = 9.247 * weightField.value + 3.098 * heightField.value - 4.330 * ageField.value + 447.593;
                     }
 
-                    bmrValue.textContent = `${Math.round(bmr)} kcal/日`; //概算
+                    currentBmrValue = Math.round(bmr);
+                    bmrValue.textContent = `${currentBmrValue} kcal/日`; //概算
                     bmrPreview.classList.remove('hidden');
                 } else {
                     bmrPreview.classList.add('hidden');
+                    currentBmrValue = 0;
                 }
 
                 return isValid;
@@ -261,7 +265,13 @@
 
                 // FormDataオブジェクトの作成
                 const formData = new FormData(form);
-                formData.append(" _method", "PUT"); // PUTメソッドを指定
+                formData.append("_method", "PUT"); // PUTメソッドを指定
+                console.log(formData);
+
+                if(currentBmrValue > 0) {
+                    formData.append("bmr_round", currentBmrValue); // 基礎代謝を追加
+                }
+
                 // CSRFトークンの取得
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -269,11 +279,11 @@
                 axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 
                 // axiosでデータを送信
-                axios.post('/user_profile/update', formData, {
+                axios.put('/user_profile/update', formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
                         'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
                     }
                 })
                 .then(response => {
@@ -292,8 +302,10 @@
 
                         // フォームの先頭までスクロール
                         window.scrollTo({top: form.offsetTop - 20, behavior: 'smooth'});
-
-                        // 3秒後にプロフィール表示ページへリダイレクト
+                        for (let pair of formData.entries()) {
+                        console.log(pair[0] + ': ' + pair[1]);
+                    }
+                        //3秒後にプロフィール表示ページへリダイレクト
                         setTimeout(() => {
                             window.location.href = '{{ route("records.index") }}';
                         }, 3000);
@@ -327,7 +339,8 @@
 
                     // フォームの先頭までスクロール
                     window.scrollTo({top: form.offsetTop - 20, behavior: 'smooth'});
-                    console.error('Error:', error);
+                    //console.error('Error:', error);
+
                 });
             });
 
