@@ -238,115 +238,64 @@
             });
 
             // フォーム送信時の処理
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault(); // デフォルトのフォーム送信を防止
 
-                // 送信前の最終バリデーション
-                if (!validateAndCalculate()) {
-                    // エラーメッセージの集約
-                    let errorList = [];
-                    if (!ageError.classList.contains('hidden')) errorList.push(ageError.textContent);
-                    if (!heightError.classList.contains('hidden')) errorList.push(heightError.textContent);
-                    if (!weightError.classList.contains('hidden')) errorList.push(weightError.textContent);
-
-                    // エラーメッセージの表示
-                    errorMessage.querySelector('p').innerHTML = errorList.join('<br>');
-                    errorMessage.classList.remove('hidden');
-                    successMessage.classList.add('hidden');
-
-                    // フォームの先頭までスクロール
-                    window.scrollTo({top: form.offsetTop - 20, behavior: 'smooth'});
-                    return;
-                }
-
-                // 送信中の表示
+                // ローディング表示
                 saveButton.disabled = true;
                 loadingSpinner.classList.remove('hidden');
 
-                // FormDataオブジェクトの作成
+                // フォームデータを取得
                 const formData = new FormData(form);
-                formData.append("_method", "PUT"); // PUTメソッドを指定
-                console.log(formData);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
 
-                if(currentBmrValue > 0) {
-                    formData.append("bmr_round", currentBmrValue); // 基礎代謝を追加
-                }
-
-                // CSRFトークンの取得
+                // CSRFトークンを設定
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                // axiosのデフォルトヘッダーにCSRFトークンを設定
                 axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 
                 // axiosでデータを送信
-                axios.put('/user_profile/update', formData, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                })
-                .then(response => {
-                    // レスポンスデータを取得
-                    const data = response.data;
-
-                    // 送信中の表示を解除
-                    saveButton.disabled = false;
-                    loadingSpinner.classList.add('hidden');
-
-                    if (data.success) {
-                        // 成功メッセージの表示
-                        successMessage.querySelector('p').textContent = data.message || 'プロフィールを更新しました';
-                        successMessage.classList.remove('hidden');
-                        errorMessage.classList.add('hidden');
-
-                        // フォームの先頭までスクロール
-                        window.scrollTo({top: form.offsetTop - 20, behavior: 'smooth'});
-                        for (let pair of formData.entries()) {
-                        console.log(pair[0] + ': ' + pair[1]);
-                    }
-                        //3秒後にプロフィール表示ページへリダイレクト
-                        setTimeout(() => {
-                            window.location.href = '{{ route("records.index") }}';
-                        }, 3000);
-                    } else {
-                        // エラーメッセージの表示
-                        if (data.errors) {
-                            let errorList = [];
-                            for (const key in data.errors) {
-                                errorList.push(data.errors[key]);
-                            }
-                            errorMessage.querySelector('p').innerHTML = errorList.join('<br>');
-                        } else {
-                            errorMessage.querySelector('p').textContent = data.message || '更新に失敗しました';
-                        }
+                try {
+                    const response = await axios.post('/user_profile/update', {
+                        weight: data.weight,
+                        height: data.height,
+                        age: data.age,
+                        gender: data.gender,
+                        bmr_round: currentBmrValue
+                    });
+                    console.log(response.data);
+                    // 成功時の処理
+                    successMessage.classList.remove('hidden');
+                    successMessage.querySelector('p').textContent = response.data.message;
+                    setTimeout(() => {
+                        window.location.href = '/index';
+                        }, 2000);
+                    } catch(error) {
+                        // エラー時の処理
                         errorMessage.classList.remove('hidden');
-                        successMessage.classList.add('hidden');
-
-                        // フォームの先頭までスクロール
-                        window.scrollTo({top: form.offsetTop - 20, behavior: 'smooth'});
+                        if (error.response && error.response.data.errors) {
+                            const errors = error.response.data.errors;
+                            let errorText = '';
+                            for (const key in errors) {
+                                errorText += errors[key][0] + '\n';
+                            }
+                            errorMessage.querySelector('p').textContent = errorText;
+                        } else {
+                            errorMessage.querySelector('p').textContent = 'エラーが発生しました。もう一度お試しください。';
+                        }
+                    } finally {
+                        // ローディング表示を解除
+                        saveButton.disabled = false;
+                        loadingSpinner.classList.add('hidden');
                     }
-                })
-                .catch(error => {
-                    // 送信中の表示を解除
-                    saveButton.disabled = false;
-                    loadingSpinner.classList.add('hidden');
-
-                    // エラーメッセージの表示
-                    errorMessage.querySelector('p').textContent = '通信エラーが発生しました。後でもう一度お試しください。';
-                    errorMessage.classList.remove('hidden');
-                    successMessage.classList.add('hidden');
-
-                    // フォームの先頭までスクロール
-                    window.scrollTo({top: form.offsetTop - 20, behavior: 'smooth'});
-                    //console.error('Error:', error);
-
-                });
             });
 
             // 初期表示時のバリデーションと基礎代謝計算
             validateAndCalculate();
         });
+
     </script>
 </body>
 </html>
