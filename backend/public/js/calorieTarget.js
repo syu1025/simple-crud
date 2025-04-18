@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
             //console.log(response.data);
 
             //成功したらモーダルを閉じる
-            document.getElementById('targeModal').close();
+            document.getElementById('targetModal').close();
             //UIの更新も
             const display = document.getElementById("currentTargetValue");
             display.textContent = response.data.target_burned_calories_day;
