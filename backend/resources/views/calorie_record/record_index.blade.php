@@ -94,7 +94,7 @@
             <div class="max-w-7xl mx-auto px-4 py-4 flex items-center">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800" onclick="document.getElementById('userModal').showModal()">
-                        {{ $user->name }}さんのユーザー情報
+                        {{ $user->name }}さんの基礎代謝:<span class="font-medium text-green-800 mb-1">{{ $user_info->bmr_round }}</span> kcal/日
                     </h3>
                 </div>
                 <dialog id="userModal" class="rounded-lg shadow-xl p-6 max-w-md w-full bg-gradient-to-br from-white to-gray-50 border border-gray-100">
@@ -282,11 +282,11 @@
                                     {{ number_format($record->total_intake) }} kcal
                                 </div>
                                 <div class="font-medium">
-                                    {{ number_format($record->total_burned) }} kcal
+                                    {{ number_format($record->total_burned + $user_info->bmr_round) }} kcal
                                 </div>
                                 <div
-                                    class="{{ $record->total_intake - $record->total_burned > 0 ? 'text-red-500' : 'text-green-500' }} font-medium">
-                                    {{ number_format($record->total_intake - $record->total_burned) }} kcal
+                                    class="{{ $record->total_intake - $record->total_burned - $user_info->bmr_round > 0 ? 'text-red-500' : 'text-green-500' }} font-medium">
+                                    {{ number_format($record->total_intake - $record->total_burned - $user_info->bmr_round ) }} kcal
                                 </div>
                             </div>
                         </a>
