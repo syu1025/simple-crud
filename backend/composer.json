@@ -40,10 +40,6 @@
             "chmod -R 777 storage/",
             "php artisan optimize"
         ],
-        "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
-        ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
@@ -63,7 +59,7 @@
         "platform": {
             "php": "8.1"
         },
-    "memory-limit": "2G",
+        "memory-limit": "2G",
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
