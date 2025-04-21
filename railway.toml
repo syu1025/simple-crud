@@ -6,5 +6,5 @@ buildCommand = "composer install --optimize-autoloader --no-dev && npm install &
 workdir = "backend"
 
 [deploy]
-startCommand = "sh -c \"php -S 0.0.0.0:$PORT -t public\""
+startCommand = "sh -c \"echo '<?php echo \\\"Hello World\\\";' > public/hello.php && php -S 0.0.0.0:$PORT -t public\""
 restartPolicyType = "ON_FAILURE"
