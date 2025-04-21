@@ -1,10 +1,10 @@
 [build]
 builder      = "nixpacks"
-buildCommand = "composer install --optimize-autoloader --no-dev && php artisan config:cache && php artisan route:cache"
+buildCommand = "composer install --optimize-autoloader --no-dev && npm install && npm run build && php artisan config:cache && php artisan route:cache"
 
 [nixpacks]
 workdir = "backend"
 
 [deploy]
-startCommand = "sh -c \"php -S 0.0.0.0:$PORT public/index.php\""
+startCommand = "sh -c \"php -S 0.0.0.0:$PORT -t public\""
 restartPolicyType = "ON_FAILURE"
