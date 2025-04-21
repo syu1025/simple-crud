@@ -6,5 +6,5 @@ buildCommand = "composer install --optimize-autoloader --no-dev && php artisan c
 workdir = "backend"
 
 [deploy]
-startCommand = "sh -c \"cd backend && php -S 0.0.0.0:$PORT public/index.php\""
+startCommand = "sh -c \'cd backend && php -S 0.0.0.0:$PORT public/index.php\'"
 restartPolicyType = "ON_FAILURE"
