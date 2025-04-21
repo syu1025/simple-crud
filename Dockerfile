@@ -39,13 +39,4 @@ ENV PORT=8000
 # アプリケーションを実行
 CMD php artisan serve --host=0.0.0.0 --port=${PORT}
 
-<<<<<<< HEAD
-EXPOSE $PORT
-
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php \
-    && php -r "unlink('composer-setup.php');" \
-    && mv composer.phar /usr/local/bin/composer
-=======
 EXPOSE ${PORT}
->>>>>>> d28a728ffc151df14d80d87dd6f78ec7644e6de3
